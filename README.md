@@ -27,8 +27,9 @@ REQUIREMENTS
 - GAS Library
   - [OAuth2](https://github.com/googleworkspace/apps-script-oauth2)
   - [JobBroker](https://github.com/k2tzumi/apps-script-jobqueue)
-- [Cloudinary](https://cloudinary.com/)
-Image conversion is done using Cloudinary.
+- [Cloudinary](https://cloudinary.com/)  
+Note: You want to use either CLOUDINARY for the convert images processing.  
+Cloudinary provides free starter account, to get yours signup [here](https://cloudinary.com/invites/lpov9zyyucivvxsnalc5/w9frhigoqsj7nhf3umug).
 
 USAGE
 --------------------
