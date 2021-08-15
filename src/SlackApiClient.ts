@@ -175,6 +175,20 @@ interface FileComment {
   share_user_id: string;
 }
 
+interface Bot {
+  id: string;
+  deleted: boolean;
+  name: string;
+  updated: number;
+  app_id: string;
+  user_id: string;
+  icons: {
+    image_36: string;
+    image_48: string;
+    image_72: string;
+  };
+}
+
 interface ChatScheduleMessageResponse extends Response {
   channel: string;
   scheduled_message_id: string;
@@ -205,6 +219,18 @@ interface ConversationsResponse extends Response {
 
 interface FileResponse extends Response {
   file: File;
+}
+
+interface BotResponse extends Response {
+  bot: Bot;
+}
+
+interface AuthTestResponse extends Response {
+  url: string;
+  team: string;
+  user: string;
+  team_id: string;
+  user_id: string;
 }
 
 class NotInChannelError extends BaseError {
@@ -635,7 +661,7 @@ class SlackApiClient {
 
   public conversationsInfo(channel: string): Channel {
     const endPoint = SlackApiClient.BASE_PATH + "conversations.info";
-    const payload: {} = {
+    const payload = {
       channel,
       include_locale: true
     };
@@ -651,6 +677,51 @@ class SlackApiClient {
     }
 
     return response.channel;
+  }
+
+  /**
+   * @see https://api.slack.com/methods/auth.test
+   * @returns {AuthTestResponse}
+   */
+  public authTest(): AuthTestResponse {
+    const endPoint = SlackApiClient.BASE_PATH + "auth.test";
+    const payload = {};
+
+    const response = this.invokeAPI(endPoint, payload) as AuthTestResponse;
+
+    if (!response.ok) {
+      throw new Error(
+        `auth test faild. response: ${JSON.stringify(
+          response
+        )}, payload: ${JSON.stringify(payload)}`
+      );
+    }
+
+    console.log(`auth.test: ${JSON.stringify(response)}`);
+
+    return response;
+  }
+
+  /**
+   * @see https://api.slack.com/methods/bots.info
+   * @param {string} bot
+   * @returns {Bot}
+   */
+  public botsInfo(bot: string): Bot {
+    const endPoint = SlackApiClient.BASE_PATH + "bots.info";
+    const payload = { bot };
+
+    const response = this.invokeAPI(endPoint, payload) as BotResponse;
+
+    if (!response.ok) {
+      throw new Error(
+        `bots info faild. response: ${JSON.stringify(
+          response
+        )}, payload: ${JSON.stringify(payload)}`
+      );
+    }
+
+    return response.bot;
   }
 
   private convertBlock2Text(blocks: (Block | Record<string, any>)[]): string {
@@ -846,6 +917,7 @@ class SlackApiClient {
       case /(.)*conversations\.history$/.test(endPoint):
       case /(.)*users\.info$/.test(endPoint):
       case /(.)*conversations\.info$/.test(endPoint):
+      case /(.)*bots\.info$/.test(endPoint):
         return "get";
       default:
         return "post";

@@ -14,6 +14,7 @@ declare namespace Slack {
       text: string;
       response_url: string;
       trigger_id: string;
+      api_app_id: string;
     }
   }
 }

@@ -199,9 +199,10 @@ const executeCommandLgtm = (): void => {
       } catch (e) {
         if (e instanceof NotInChannelError) {
           const webhook = new SlackWebhooks(commands.response_url);
+          const botUserId = getBotUserId();
           webhook.invoke({
             response_type: "ephemeral",
-            text: `Invite bot users to join #${commands.channel_name}`
+            text: `Invite <@${botUserId}> to join #${commands.channel_name}\n\`/invite <@${botUserId}> #${commands.channel_name}\`⏎`
           });
         }
       }
@@ -209,6 +210,10 @@ const executeCommandLgtm = (): void => {
     "executeCommandLgtm"
   );
 };
+
+function getBotUserId(): string {
+  return new SlackApiClient(handler.token).authTest().user_id;
+}
 
 function changeFileComment(channel_id: string, ts: string, comment: string) {
   new SlackApiClient(handler.token).chatUpdate(channel_id, ts, comment);
