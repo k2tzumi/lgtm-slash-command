@@ -64,10 +64,11 @@ In order to run the application and change its behavior, you need to set the fol
 |VERIFICATION_TOKEN|○|Basic Information > App Credentials > Verification Token|A token that easily authenticates the source of a hooked request|
 |CLIENT_ID|○|Basic Information > App Credentials > Client ID|Use with OAuth|
 |CLIENT_SECRET|○|Basic Information > App Credentials > Client Secret|Use with OAuth|
-|USER_TOKEN|-|Basic Information > App Credentials > Client Secret|Use with OAuth|Specify if you want the URL of the uploaded file to be an external public link.|
+|USER_TOKEN|-|Basic Information > App Credentials > Client Secret|Specify if you want the URL of the uploaded file to be an external public link.|
 |GOOGLE_API_KEY|○|[Create Credentials](https://console.cloud.google.com/apis/credentials)||
 |CUSTOM_SEARCH_ENGINE_ID|○|Enabling the Custom Search API. Getting the Custom Search Engine (CSE)||
-|CLOUDINARY_CLOUD_NAME|○|[Settings > Account](https://cloudinary.com/console/lui/settings/account)|Cloudinary cloud name|
+|SEARCH_RIGHTS||https://wiki.creativecommons.org/wiki/CC_Search_integration#Google_Web_Search
+default: `(cc_publicdomain|cc_attribute|cc_sharealike|cc_nonderived)`|Specify the license of the search image|
 |CLOUDINARY_API_KEY|○|[Settings > Security](https://cloudinary.com/console/lui/settings/security)|Access Keys: API Key|
 |CLOUDINARY_API_SECRET|○|[Settings > Security](https://cloudinary.com/console/lui/settings/security)|Access Keys: API Secret|
 

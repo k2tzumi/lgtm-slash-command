@@ -296,11 +296,15 @@ function fileUpload(
 const GOOGLE_API_KEY = properties.getProperty("GOOGLE_API_KEY") || "";
 const CUSTOM_SEARCH_ENGINE_ID =
   properties.getProperty("CUSTOM_SEARCH_ENGINE_ID") || "";
+const SEARCH_RIGHTS =
+  properties.getProperty("SEARCH_RIGHTS") || "(cc_publicdomain|cc_attribute|cc_sharealike|cc_nonderived)";
 
 function executeSearch(word: string, locale: string): ImageItem[] {
   const cient = new CustomImageSearchClient(
     GOOGLE_API_KEY,
-    CUSTOM_SEARCH_ENGINE_ID
+    CUSTOM_SEARCH_ENGINE_ID,
+    locale,
+    SEARCH_RIGHTS
   );
 
   return cient.search(word);

@@ -22,10 +22,18 @@ const DEFAULT_LANG = "lang_ja";
 const NUM = 10;
 
 class CustomImageSearchClient {
+  /**
+   *
+   * @param {string} apiKey
+   * @param {string} searchEngineId
+   * @param {string} locale
+   * @param {string} rights Filters based on licensing. see https://wiki.creativecommons.org/wiki/CC_Search_integration
+   */
   public constructor(
     private apiKey: string,
     private searchEngineId: string,
-    private locale?: string
+    private locale?: string,
+    private rights?: string
   ) {}
 
   /**
@@ -80,7 +88,9 @@ class CustomImageSearchClient {
       this.searchEngineId
     }&searchType=image&q=${encodeURIComponent(
       keyword
-    )}&safe=active&lr=${this.language()}&num=${NUM}&start=${start}`;
+    )}&safe=active&lr=${this.language()}&rights=${
+      this.rights ? encodeURIComponent(this.rights) : ""
+    }&num=${NUM}&start=${start}`;
   }
 
   private language(): string {
