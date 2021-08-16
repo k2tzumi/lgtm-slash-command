@@ -173,7 +173,7 @@ const executeCommandLgtm = (): void => {
           ? match[0]
           : pickupImage(executeSearch(commands.text, locale)).link;
         const upload = transformLgtm(url);
-        let file = fileUpload(
+        const file = fileUpload(
           commands.channel_id,
           upload.secure_url,
           upload.original_filename,
@@ -186,8 +186,7 @@ const executeCommandLgtm = (): void => {
         url = file.url_private;
 
         try {
-          file = createExternalLink(file.id);
-          url = file.permalink_public;
+          url = createExternalLink(file.id);
         } catch (e) {
           console.warn("createExternalLinkb fail.", e);
         }
@@ -197,13 +196,22 @@ const executeCommandLgtm = (): void => {
         // delete LGTM (original) image
         createCloudinaryClient().destroy(upload.public_id);
       } catch (e) {
+        const webhook = new SlackWebhooks(commands.response_url);
         if (e instanceof NotInChannelError) {
-          const webhook = new SlackWebhooks(commands.response_url);
           const botUserId = getBotUserId();
           webhook.invoke({
             response_type: "ephemeral",
             text: `Invite <@${botUserId}> to join #${commands.channel_name}\n\`/invite <@${botUserId}> #${commands.channel_name}\`⏎`
           });
+        } else {
+          webhook.invoke({
+            response_type: "ephemeral",
+            text: "Oops! Something went wrong. :sob:"
+          });
+          console.trace()
+          console.error(
+            `message: ${e.message}, stack: ${JSON.stringify(e.stack)}`
+          );
         }
       }
     },
@@ -221,9 +229,13 @@ function changeFileComment(channel_id: string, ts: string, comment: string) {
 
 const USER_TOKEN: string = properties.getProperty("USER_TOKEN") || "";
 
-function createExternalLink(fileID: string): File {
+function createExternalLink(fileID: string): string {
   const client = new SlackApiClient(USER_TOKEN);
-  return client.filesSharedPublicURL(fileID);
+  const file = client.filesSharedPublicURL(fileID);
+
+  const pubSecret = file.permalink_public.split("-").pop();
+
+  return `${file.url_private}?pub_secret=${pubSecret}`;
 }
 
 const CLOUDINARY_CLOUD_NAME =
@@ -297,7 +309,8 @@ const GOOGLE_API_KEY = properties.getProperty("GOOGLE_API_KEY") || "";
 const CUSTOM_SEARCH_ENGINE_ID =
   properties.getProperty("CUSTOM_SEARCH_ENGINE_ID") || "";
 const SEARCH_RIGHTS =
-  properties.getProperty("SEARCH_RIGHTS") || "(cc_publicdomain|cc_attribute|cc_sharealike|cc_nonderived)";
+  properties.getProperty("SEARCH_RIGHTS") ||
+  "(cc_publicdomain|cc_attribute|cc_sharealike|cc_nonderived)";
 
 function executeSearch(word: string, locale: string): ImageItem[] {
   const cient = new CustomImageSearchClient(
